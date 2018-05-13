@@ -23,6 +23,7 @@ var chartGroup = svg.append("g")
 
 // Initial Params
 var chosenXAxis = "greater_than_30"
+var chosenYAxis = "fair_poor_health"
 
 
 // function used for updating x-scale var upon click on axis label
@@ -67,17 +68,23 @@ function renderCircles(circlesGroup, newXScale, chosenXaxis) {
 function updateToolTip(chosenXAxis, circlesGroup) {
 
     if (chosenXAxis == "greater_than_30") {
-      var label = "Commute greater 30: "
+      var labelX = "Commute greater 30 mins: "
     } else {
-      var label = "Commute less 30: "
+      var labelX = "Commute less 30 mins: "
     }
   
+    if (chosenYAxis == "fair_poor_health") {
+        var labelY = "Fair to Poor Health: "
+    } else {
+        var labelY = "Good to Excellent Health: "
+    }
+
     var toolTip = d3.tip()
       .attr("class", "tooltip")
       .offset([80, -60])
       .html(function (d) {
           // no label  variabile $?
-        return (`${d.location}<br>${label}${d[chosenXAxis]}%`);
+        return (`${d.location}<br>${labelX}${d[chosenXAxis]}%<br>${labelY}${d[chosenYAxis]}%`);
       });
   
     circlesGroup.call(toolTip);
@@ -133,6 +140,12 @@ d3.csv("commuteData.csv", function(err, dataCSV){
   chartGroup.append("g")
     .call(leftAxis)
 
+// var yAxis = chartGroup.append("g")
+// .classed("y-axis", true)
+// .attr("transform", `translate(0, ${height})`)
+// .call(leftAxis)
+
+
 
 
 
@@ -159,6 +172,7 @@ var greater30 = labelsGroup.append("text")
 .attr("y", 20)
 .attr("value", "greater_than_30") //value to grab for event listener
 .classed("active", true)
+.style("font-weight", "bold")
 .text("Commute Greater than 30 Mins");
 
 var lesser30 = labelsGroup.append("text")
@@ -207,20 +221,30 @@ var circlesGroup = updateToolTip(chosenXAxis, circlesGroup)
         // updates tooltips with new info
         circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
+        console.log(chosenXAxis);
+        
         // changes classes to change bold text
-        if (chosenXAxis == "less_than_30") {
+        if (chosenXAxis == "greater_than_30") {
             greater30
             .classed("active", true)
+            .style("font-weight", "bold")
+            .style("font-size", "16px")
             .classed("inactive", false)
             lesser30
             .classed("active", false)
+            .style("font-weight", "normal")
+            .style("font-size", "14px")
             .classed("inactive", true)
         } else {
             greater30
             .classed("active", false)
+            .style("font-weight", "normal")
+            .style("font-size", "14px")
             .classed("inactive", true)
             lesser30
             .classed("active", true)
+            .style("font-weight", "bold")
+            .style("font-size", "16px")
             .classed("inactive", false)
         };
       };
